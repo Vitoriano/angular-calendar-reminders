@@ -1,0 +1,67 @@
+
+<form [formGroup]="reminderForm" (ngSubmit)="onSubmit()" class="form">
+  <mat-form-field appearance="fill">
+    <mat-label>Text</mat-label>
+    <input matInput id="text" formControlName="text" autocomplete="off"/>
+    <mat-error *ngIf="reminderForm.get('text').hasError('required')">
+      Text is required.
+    </mat-error>
+    <mat-error *ngIf="reminderForm.get('text').hasError('maxlength')">
+      Text cannot be more than 30 characters.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Date and Time</mat-label>
+    <input matInput id="dateTime" type="datetime-local" formControlName="dateTime" />
+    <mat-error *ngIf="reminderForm.get('dateTime').hasError('required')">
+      Date and Time are required.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Color</mat-label>
+    <input matInput id="color" type="color" formControlName="color" />
+    <mat-error *ngIf="reminderForm.get('color').hasError('required')">
+      Color is required.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" formGroupName="city">
+    <mat-label>City</mat-label>
+    <input
+      type="text"
+      matInput
+      id="city"
+      formControlName="label"
+      [matAutocomplete]="auto"
+      (input)="onCityInput($event)"
+      autocomplete="off"
+    />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSuggestionClick($event.option.value)">
+      <mat-option *ngFor="let suggestion of citySuggestions" [value]="suggestion">
+        {{ suggestion.name }} - {{ suggestion.state }} - {{ suggestion.country }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <button *ngIf="isObjectEmpty(data); else edit" mat-raised-button color="primary" type="submit" [disabled]="!reminderForm.valid" id="btnCreateReminder">Create Reminder</button>
+
+  <ng-template #edit>
+
+    <div class="weather-info-container" *ngIf=" data.weather.icon">
+      <h4 class="weather-info-title">Weather Forcast</h4>
+      <div class="weather-info">
+          <span class="weather-description">{{ data.weather.description }}:</span>
+          <img [src]="'https://openweathermap.org/img/wn/' + data.weather.icon + '@2x.png'" alt="Weather Icon" class="weather-icon" />
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button mat-raised-button color="accent" type="submit" class="button-spacing" id="btnEditReminder">Edit Reminder</button>
+      <button mat-raised-button color="warn" type="button" (click)="onDelete(data, data.id)" class="button-spacing" id="btnDeleteReminder">Delete Reminder</button>
+    </div>
+  </ng-template>
+
+</form>
+

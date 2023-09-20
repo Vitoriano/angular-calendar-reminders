@@ -1,0 +1,45 @@
+<mat-toolbar>
+  <button mat-icon-button>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Angular Calendar</span>
+  <span class="spacer"></span>
+  <button id="openReminderForm" mat-button (click)="openReminderForm()">
+   <mat-icon>add</mat-icon> New reminder
+ </button>
+</mat-toolbar>
+
+<!-- Create the calendar here -->
+
+<div class="calendar">
+  <div class="header">
+    <h2>{{ (reminder$ | async)?.monthName }}</h2>
+  </div>
+  <div class="body">
+    <div class="weekdays">
+      <div class="weekday" *ngFor="let weekday of (reminder$ | async)?.weekDays" >
+        {{ weekday }}
+      </div>
+    </div>
+    <div class="days">
+      <div *ngFor="let item of (reminder$ | async)?.data" class="day">
+        {{ item.day }}
+        <ul *ngIf="item.reminder">
+          <li *ngFor="let reminder of item.reminder; let index = index;"
+              [style.backgroundColor]="reminder.color"
+              class="reminder-item"
+              [id]="'reminder' + item.day + '_' + index"
+              (click)="openReminderForm(reminder)">
+            {{ reminder.text  | slice:0:10}}...
+            <div class="weather-icon-container" *ngIf="reminder.weather?.icon">
+              <img [src]="'https://openweathermap.org/img/wn/' + reminder.weather?.icon  + '@2x.png'"
+                   alt="Weather Icon"
+                   class="weather-icon" />
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ======================== -->
